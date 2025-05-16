@@ -48,8 +48,12 @@ uv --version
 ```
 
 ---
-
-### 4. Create and Activate the Virtual Environment
+### 4. To allow the Virtual Environment to run without Admin Privileges    
+```bash
+Set-ExecutionPolicy -Scope CurrentUser Bypass
+```
+---
+### 5. Create and Activate the Virtual Environment
 
 ```bash
 uv venv
@@ -69,7 +73,7 @@ Then activate it:
 
 ---
 
-### 5. Install Dependencies
+### 6. Install Dependencies
 
 With the environment activated:
 
@@ -79,7 +83,7 @@ uv pip install -r pyproject.toml
 
 ---
 
-### 6. Add Your Data Files
+### 7. Add Your Data Files
 
 - Place `contacts.csv` and `do_not_contact.csv` into the project folder.
 - Required columns:
@@ -92,7 +96,7 @@ uv pip install -r pyproject.toml
 
 ---
 
-### 7. Run the Script
+### 8. Run the Script
 
 ```bash
 python dnc_checker.py
