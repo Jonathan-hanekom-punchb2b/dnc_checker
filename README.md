@@ -30,17 +30,22 @@ Download the .zip file from Github above (The big green button) or follow this l
 
 ### 2. Install Python (if not already installed)
 
-- Download and install from: https://www.python.org/downloads/windows/
+- Download and install from: https://www.python.org/downloads
+- Select the latest version.
+- Select the version compatible with your operating system.
 - ✅ Ensure you check **“Add Python to PATH”** during installation.
 
 ---
 
 ### 3. Install `uv` (Python package & environment manager)
-
+Windows:
 ```bash
 pip install uv
 ```
-
+MacOS:
+```bash
+pip3 install uv
+```
 Test installation:
 
 ```bash
@@ -48,7 +53,7 @@ uv --version
 ```
 
 ---
-### 4. To allow the Virtual Environment to run without Admin Privileges    
+### 4. To allow the Virtual Environment to run without Admin Privileges (Windows only)
 ```bash
 Set-ExecutionPolicy -Scope CurrentUser Bypass
 ```
