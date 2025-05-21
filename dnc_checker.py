@@ -31,8 +31,8 @@ def fuzzy_score(name, name_set):
     return match[1] if match else 0
 
 # Load your CSVs
-contacts_df = pd.read_csv("contacts.csv")
-do_not_contact_df = pd.read_csv("do_not_contact.csv")
+contacts_df = pd.read_csv("zoominfo_contacts.csv")
+do_not_contact_df = pd.read_csv("exclusions.csv")
 
 # Clean and prep using the original column names
 contacts_df['clean_company'] = contacts_df['Company Name'].apply(clean_company_name)
@@ -64,6 +64,7 @@ contacts_df['do_not_contact'] = (
 
 # Select and save the relevant columns
 output_df = contacts_df[['Company Name', 'Company Domain', 'do_not_contact', 'company_exact_match', 'company_fuzzy_match', 'company_fuzzy_score', 'company_needs_review', 'domain_exact_match']]
-output_df.to_csv("contacts_checked.csv", index=False)
+output_df.to_csv("accounts_checked.csv", index=False)
 
-print("✅ Done! Output saved to 'contacts_checked.csv'")
+print("✅ Done! Output saved to 'accounts_checked.csv'")
+print("🗑️ Remember to delete all contact data from you personal computer and clear out your recycle bin")

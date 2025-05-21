@@ -1,7 +1,7 @@
 
 # 🛑 Do Not Contact (DNC) Checker
 
-This tool helps teams safely and **accurately compare a list of sourced contacts against a "Do Not Contact" (DNC) list**, using both exact and fuzzy matching techniques on company names and domains.
+This tool helps teams safely and **accurately compare a list of sourced accounts against a "Do Not Contact" (DNC) list**, using both exact and fuzzy matching techniques on company names and domains.
 
 ---
 
@@ -9,8 +9,8 @@ This tool helps teams safely and **accurately compare a list of sourced contacts
 
 ```
 dnc_checker/
-├── contacts.csv               # Your list of sourced contacts
-├── do_not_contact.csv         # Master DNC list (company & domain)
+├── zoominfo_contacts.csv      # Your list of sourced accounts
+├── exclusions.csv             # Master DNC list (company & domain)
 ├── dnc_checker.py             # Main Python script
 ├── pyproject.toml             # Dependencies (pandas + rapidfuzz)
 └── README.md                  # This document
@@ -33,16 +33,30 @@ Download the .zip file from Github above (The big green button) or follow this l
 - Download and install from: https://www.python.org/downloads
 - Select the latest version.
 - Select the version compatible with your operating system.
-- ✅ Ensure you check **“Add Python to PATH”** during installation.
+- ✅ Ensure you check **“Add Python to PATH”** during installation. (Windows only)
+
+---
+
+### 3. Test Python Installation
+
+On **Windows**:
+```bash
+python --version 
+```
+On **macOS/Linux**:
+```bash
+python3 --version
+```
 
 ---
 
 ### 3. Install `uv` (Python package & environment manager)
-Windows:
+
+On **Windows**:
 ```bash
 pip install uv
 ```
-MacOS:
+On **macOS/Linux**:
 ```bash
 pip3 install uv
 ```
@@ -90,14 +104,17 @@ uv pip install -r pyproject.toml
 
 ### 7. Add Your Data Files
 
-- Place `contacts.csv` and `do_not_contact.csv` into the project folder.
+- Place `zoominfo_contacts.csv` and `exclusions.csv` into the project folder.
+- `zoominfo_contacts.csv` should be the list of accounts you have sourced contacts from in ZoomInfo.
+- `exclusions.csv` should be the client provided list of accounts to exclude. 
 - Required columns:
 
-  `contacts.csv`:
-  - `company`, `domain`, `email`
-
-  `do_not_contact.csv`:
+  `zoominfo_contacts.csv`:
   - `company`, `domain`
+
+  `exclusions.csv`:
+  - `company`, `domain`
+- It is vitally important that the column headers be formatted **exactly** as shown above. 
 
 ---
 
@@ -107,7 +124,15 @@ uv pip install -r pyproject.toml
 python dnc_checker.py
 ```
 
-Output: `contacts_checked.csv` will contain flags for any matches found.
+Output: `accounts_checked.csv` will contain flags for any matches found.
+
+---
+
+### 9. Upload to Google Sheets
+
+- Create a new sheet in your working spreadsheet and import the data. 
+- Filter the data by the `do_not_contact` column. 
+- Move all the contacts associated with the flagged accounts.
 
 ---
 
