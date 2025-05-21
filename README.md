@@ -50,7 +50,7 @@ python3 --version
 
 ---
 
-### 3. Install `uv` (Python package & environment manager)
+### 4. Install `uv` (Python package & environment manager)
 
 On **Windows**:
 ```bash
@@ -67,12 +67,12 @@ uv --version
 ```
 
 ---
-### 4. To allow the Virtual Environment to run without Admin Privileges (Windows only)
+### 5. To allow the Virtual Environment to run without Admin Privileges (Windows only)
 ```bash
 Set-ExecutionPolicy -Scope CurrentUser Bypass
 ```
 ---
-### 5. Create and Activate the Virtual Environment
+### 6. Create and Activate the Virtual Environment
 
 ```bash
 uv venv
@@ -92,7 +92,7 @@ Then activate it:
 
 ---
 
-### 6. Install Dependencies
+### 7. Install Dependencies
 
 With the environment activated:
 
@@ -102,7 +102,7 @@ uv pip install -r pyproject.toml
 
 ---
 
-### 7. Add Your Data Files
+### 8. Add Your Data Files
 
 - Place `zoominfo_contacts.csv` and `exclusions.csv` into the project folder.
 - `zoominfo_contacts.csv` should be the list of accounts you have sourced contacts from in ZoomInfo.
@@ -118,17 +118,22 @@ uv pip install -r pyproject.toml
 
 ---
 
-### 8. Run the Script
+### 9. Run the Script
 
+- On **Windows**:
 ```bash
 python dnc_checker.py
 ```
 
+- On **macOS/Linux**:
+```bash
+python3 dnc_checker.py
+```
 Output: `accounts_checked.csv` will contain flags for any matches found.
 
 ---
 
-### 9. Upload to Google Sheets
+### 10. Upload to Google Sheets
 
 - Create a new sheet in your working spreadsheet and import the data. 
 - Filter the data by the `do_not_contact` column. 
