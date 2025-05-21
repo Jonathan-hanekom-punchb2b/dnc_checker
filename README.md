@@ -40,7 +40,7 @@ Download the .zip file from Github above (The big green button) or follow this l
 ### 3. Test Python Installation
 
 On **Windows**:
-```bash
+```powershell
 python --version 
 ```
 On **macOS/Linux**:
@@ -53,7 +53,7 @@ python3 --version
 ### 4. Install `uv` (Python package & environment manager)
 
 On **Windows**:
-```bash
+```powershell
 pip install uv
 ```
 On **macOS/Linux**:
@@ -81,7 +81,7 @@ uv venv
 Then activate it:
 
 - On **Windows**:
-  ```bash
+  ```powershell
   .venv\Scripts\activate
   ```
 
@@ -96,7 +96,7 @@ Then activate it:
 
 With the environment activated:
 
-```bash
+```powershell
 uv pip install -r pyproject.toml
 ```
 
@@ -121,7 +121,7 @@ uv pip install -r pyproject.toml
 ### 9. Run the Script
 
 - On **Windows**:
-```bash
+```powershell
 python dnc_checker.py
 ```
 
