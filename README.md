@@ -68,7 +68,7 @@ uv --version
 
 ---
 ### 5. To allow the Virtual Environment to run without Admin Privileges (Windows only)
-```bash
+```powershell
 Set-ExecutionPolicy -Scope CurrentUser Bypass
 ```
 ---
