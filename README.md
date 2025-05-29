@@ -110,10 +110,10 @@ uv pip install -r pyproject.toml
 - Required columns:
 
   `zoominfo_contacts.csv`:
-  - `company`, `domain`
+  - `Company Name`, `Company Domain`
 
   `exclusions.csv`:
-  - `company`, `domain`
+  - `Company Name`, `Company Domain`
 - It is vitally important that the column headers be formatted **exactly** as shown above. 
 
 ---
