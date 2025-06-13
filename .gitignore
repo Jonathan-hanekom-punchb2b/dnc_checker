@@ -1,7 +1,9 @@
 # Directories
 .venv/
 .vscode/
-.__pychache__/
+
 
 # Files
 *.csv
+test_results_summary.txt
+__pycache__
