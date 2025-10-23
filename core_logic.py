@@ -28,12 +28,18 @@ def clean_text(text):
     return text.strip()
 
 def clean_company_name(name):
+    if pd.isna(name):
+        return ""
+    name = str(name)  # Ensure name is a string
     name = _RE_COMPANY_SUFFIXES.sub('', name)
     return clean_text(name)
 
 def clean_domain(domain):
+    if pd.isna(domain):
+        return ""
     # Ensure domain is treated as a string before cleaning
-    return clean_text(str(domain)).replace("www.", "")
+    domain_str = str(domain).replace("www.", "")
+    return clean_text(domain_str)
 
 # --- Fuzzy Matching Functions ---
 def get_fuzzy_score_and_match(name, name_set):
@@ -69,16 +75,39 @@ def load_and_validate_files(contacts_file: str, exclusions_file: str,
         progress_callback("Loading CSV files...")
     
     try:
-        contacts_df = pd.read_csv(contacts_file)
-        do_not_contact_df = pd.read_csv(exclusions_file)
-        
+        # Read CSV files with utf-8-sig encoding to handle BOM characters from Excel
+        contacts_df = pd.read_csv(contacts_file, encoding='utf-8-sig')
+        do_not_contact_df = pd.read_csv(exclusions_file, encoding='utf-8-sig')
+
+        # Strip whitespace from column names to handle any padding issues
+        contacts_df.columns = contacts_df.columns.str.strip()
+        do_not_contact_df.columns = do_not_contact_df.columns.str.strip()
+
+        # Validate required columns exist in contacts file
+        required_contacts_columns = ['Company Name', 'Company Domain']
+        missing_contacts_columns = [col for col in required_contacts_columns if col not in contacts_df.columns]
+        if missing_contacts_columns:
+            raise ValueError(
+                f"Missing required columns in '{contacts_file}': {missing_contacts_columns}. "
+                f"Available columns: {list(contacts_df.columns)}"
+            )
+
+        # Validate required columns exist in exclusions file
+        required_exclusions_columns = ['Company Name', 'Company Domain']
+        missing_exclusions_columns = [col for col in required_exclusions_columns if col not in do_not_contact_df.columns]
+        if missing_exclusions_columns:
+            raise ValueError(
+                f"Missing required columns in '{exclusions_file}': {missing_exclusions_columns}. "
+                f"Available columns: {list(do_not_contact_df.columns)}"
+            )
+
         if progress_callback:
             progress_callback(f"Successfully loaded '{contacts_file}' containing **{len(contacts_df)}** companies to check and '{exclusions_file}' with **{len(do_not_contact_df)}** exclusion entries.")
-        
+
         return contacts_df, do_not_contact_df
-        
+
     except FileNotFoundError as e:
-        error_msg = f"Error: Required file not found - {e}. Please ensure '{contacts_file}' and '{exclusions_file}' are accessible."
+        error_msg = f"Error: Required file not found - {e.filename if hasattr(e, 'filename') else str(e)}. Please ensure '{contacts_file}' and '{exclusions_file}' exist in the current directory."
         raise FileNotFoundError(error_msg)
     except Exception as e:
         error_msg = f"An unexpected error occurred while loading files: {e}"
@@ -114,24 +143,14 @@ def clean_contacts_data(contacts_df: pd.DataFrame,
             for domain in tqdm(contacts_df['Company Domain'], desc="Cleaning Contact Company Domains", total=len(contacts_df))
         ]
     else:
-        # GUI mode - simple progress callback
-        total_contacts = len(contacts_df)
-        
-        # Clean company names
-        clean_companies = []
-        for i, name in enumerate(contacts_df['Company Name']):
-            clean_companies.append(clean_company_name(name))
-            if progress_callback and i % 100 == 0:  # Update every 100 items
-                progress_callback(f"Cleaning company names: {i}/{total_contacts}")
-        contacts_df['clean_company'] = clean_companies
-        
-        # Clean domains
-        clean_domains = []
-        for i, domain in enumerate(contacts_df['Company Domain']):
-            clean_domains.append(clean_domain(domain))
-            if progress_callback and i % 100 == 0:  # Update every 100 items
-                progress_callback(f"Cleaning domains: {i}/{total_contacts}")
-        contacts_df['clean_domain'] = clean_domains
+        # GUI mode - use list comprehensions for reliability
+        if progress_callback:
+            progress_callback("Cleaning company names...")
+        contacts_df['clean_company'] = [clean_company_name(name) for name in contacts_df['Company Name']]
+
+        if progress_callback:
+            progress_callback("Cleaning domains...")
+        contacts_df['clean_domain'] = [clean_domain(domain) for domain in contacts_df['Company Domain']]
     
     return contacts_df
 
@@ -206,13 +225,10 @@ def apply_fuzzy_matching(contacts_df: pd.DataFrame, dnc_companies: set,
         for name in tqdm(contacts_df['clean_company'], desc="Fuzzy Matching Companies", total=len(contacts_df)):
             fuzzy_results.append(get_fuzzy_score_and_match(name, dnc_companies))
     else:
-        # GUI mode with progress callback
-        fuzzy_results = []
-        total_contacts = len(contacts_df)
-        for i, name in enumerate(contacts_df['clean_company']):
-            fuzzy_results.append(get_fuzzy_score_and_match(name, dnc_companies))
-            if progress_callback and i % 50 == 0:  # Update every 50 items (fuzzy matching is slower)
-                progress_callback(f"Fuzzy matching: {i}/{total_contacts}")
+        # GUI mode - use list comprehension for reliability
+        if progress_callback:
+            progress_callback("Performing fuzzy matching...")
+        fuzzy_results = [get_fuzzy_score_and_match(name, dnc_companies) for name in contacts_df['clean_company']]
     
     # Assign results back to DataFrame
     contacts_df['company_fuzzy_score'] = [score for score, _ in fuzzy_results]
@@ -259,14 +275,13 @@ def add_matched_domains(contacts_df: pd.DataFrame, do_not_contact_df: pd.DataFra
             for name in tqdm(contacts_df['matched_dnc_company_name'], desc="Getting Matched DNC Domains", total=len(contacts_df))
         ]
     else:
-        # GUI mode with progress callback
-        matched_domains = []
-        total_contacts = len(contacts_df)
-        for i, name in enumerate(contacts_df['matched_dnc_company_name']):
-            matched_domains.append(get_matched_domain(name, dnc_company_to_domain_map))
-            if progress_callback and i % 100 == 0:
-                progress_callback(f"Getting matched domains: {i}/{total_contacts}")
-        contacts_df['matched_dnc_company_domain'] = matched_domains
+        # GUI mode - use list comprehension for reliability
+        if progress_callback:
+            progress_callback("Getting matched domains...")
+        contacts_df['matched_dnc_company_domain'] = [
+            get_matched_domain(name, dnc_company_to_domain_map)
+            for name in contacts_df['matched_dnc_company_name']
+        ]
     
     return contacts_df
 

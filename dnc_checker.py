@@ -25,10 +25,10 @@ def main():
         
         # Print final summary
         print("\n----------------------------------------------------------------------------------------------------------")
-        print(f"\n✅ Done! Output saved to '{CONFIG['output_file']}'")
+        print(f"\nDone! Output saved to '{CONFIG['output_file']}'")
         print(f"\nSummary: {summary['do_not_contact_count']} contacts flagged as 'Do Not Contact'.")
         print(f"         {summary['needs_review_count']} contacts flagged as 'Needs Review'.")
-        print("\n🗑️  Remember to delete all contact data from your personal computer and clear out your recycle bin!")
+        print("\nRemember to delete all contact data from your personal computer and clear out your recycle bin!")
         print("\n----------------------------------------------------------------------------------------------------------")
         
     except FileNotFoundError as e:
