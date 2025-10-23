@@ -1,9 +1,12 @@
 # Directories
 .venv/
 .vscode/
-
+.rules/
+hubspot-analysis/
 
 # Files
 *.csv
 test_results_summary.txt
 __pycache__
+summary.md
+frontend.md
